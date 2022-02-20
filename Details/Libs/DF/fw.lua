@@ -83,6 +83,195 @@ local specIDs = {
 	["SHAMAN"] = {262, 263, 264},
 }
 
+function DF.SpecIDToClass(specID)
+	for className, classSpecIDs in pairs(specIDs) do
+		for _, classSpecID in ipairs(classSpecIDs) do
+			if classSpecID == specID then
+				return className
+			end
+		end
+	end
+end
+
+local specInfo = {
+	--MAGE
+		--arcane
+		[62]	= {
+			[1]=62,
+			[2]="Arcane",
+		},
+		--fire
+		[63] = {
+			[1]=63,
+			[2]="Fire",
+		},
+		--frost
+		[64] = {
+			[1]=64,
+			[2]="Frost",
+		},
+
+	--PRIEST
+		--discipline
+		[256] = {
+			[1]=256,
+			[2]="Discipline",
+		},
+		--holy
+		[257] = {
+			[1]=257,
+			[2]="Holy",
+		},
+		--shadow priest
+		[258] = {
+			[1]=258,
+			[2]="Shadow",
+		},
+
+	--ROGUE
+		--assassination
+		[259] = {
+			[1]=259,
+			[2]="Assassination",
+		},
+		--combat
+		[260] = {
+			[1]=260,
+			[2]="Combat",
+		},
+		--subtlety
+		[261] = {
+			[1]=261,
+			[2]="Subtlety",
+		},
+
+	--WARLOCK
+		--affliction
+		[265] = {
+			[1]=265,
+			[2]="Affliction",
+		},
+		--demo
+		[266] = {
+			[1]=266,
+			[2]="Demonology",
+		},
+		--destro
+		[267] = {
+			[1]=267,
+			[2]="Destruction",
+		},
+
+	--WARRIOR
+		--Arms
+		[71] = {
+			[1]=71,
+			[2]="Arms",
+		},
+		--Fury
+		[72] = {
+			[1]=72,
+			[2]="Fury",
+		},
+		--Protection
+		[73] = {
+			[1]=73,
+			[2]="Protection",
+		},
+
+	--PALADIN
+		--holy
+		[65] = {
+			[1]=65,
+			[2]="Holy",
+		},
+
+		--protection
+		[66] = {
+			[1]=66,
+			[2]="Protection",
+		},
+
+		--retribution
+		[70] = {
+			[1]=70,
+			[2]="Retribution",
+		},
+
+	--DEATH KNIGHT
+		--unholy
+		[252] = {
+			[1]=252,
+			[2]="Unholy",
+		},
+		--frost
+		[251] = {
+			[1]=251,
+			[2]="Frost",
+		},
+		--blood
+		[250] = {
+			[1]=250,
+			[2]="Blood",
+		},
+
+	--DRUID
+		--balance
+		[102] = {
+			[1]=102,
+			[2]="Balance",
+		},
+		--feral
+		[103] = {
+			[1]=103,
+			[2]="Feral",
+		},
+		-- guardian
+		[104] = {			
+			[1]=104,
+			[2]="Guardian",
+		},
+		--restoration
+		[105] = {
+			[1]=105,
+			[2]="Restoration",
+		},
+
+	--HUNTER
+		--beast mastery
+		[253] = {
+			[1]=253,
+			[2]="Beast Mastery",
+		},
+		--marksmanship
+		[254] = {
+			[1]=254,
+			[2]="Marksmanship",
+		},
+		--survival
+		[255] = {
+			[1]=255,
+			[2]="Survival",
+		},
+
+	--SHAMAN
+		--elemental
+		[262] = {
+			[1]=262,
+			[2]="Elemental",
+		},
+		--enhancement
+		[263] = {
+			[1]=263,
+			[2]="Enhancement",
+		},
+		--restoration
+		[264] = {
+			[1]=264,
+			[2]="Restoration",
+		},
+}
+
 local function GetFeralSubSpec(unit)
 	--57881 = Natural Reactions - Increase bear dodge and regen rage on dodge.
 	--other options:
@@ -126,12 +315,11 @@ function DF.GetSpecializationID(class, index)
 	return specIDs[class] and specIDs[class][index]
 end
 
-function DF.GetSpecializationInfoByID (...)
+function DF.GetSpecializationInfoByID (specId, ...)
 	if (GetSpecializationInfoByID) then
-		return GetSpecializationInfoByID (...)
+		return GetSpecializationInfoByID (specId, ...)
 	end
-
-	return nil
+	return unpack(specInfo[specId] or {})
 end
 
 function DF.GetSpecializationInfo(index)
@@ -139,12 +327,17 @@ function DF.GetSpecializationInfo(index)
 	return specIDs[class] and specIDs[class][index] or 0
 end
 
-function DF.GetSpecializationRole (...)
-	if (GetSpecializationRole) then
-		return GetSpecializationRole (...)
-	end
+function DF.GetSpecializationInfoByPlayerSpecIndex(specIndex)
+	local specID = DF.GetSpecializationInfo(specIndex)
+	return unpack({DF.GetSpecializationInfoByID(specID)})
+end
 
-	return nil
+function DF.GetSpecializationRole(specIndex,...)
+	if (GetSpecializationRole) then
+		return GetSpecializationRole (specIndex, ...)
+	end
+	local specId, _, _, _, specRole = DF.GetSpecializationInfoByPlayerSpecIndex(specIndex)
+	return specRole
 end
 
 function DF.GetGUIDTalentString(guid)

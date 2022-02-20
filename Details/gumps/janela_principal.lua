@@ -2069,7 +2069,7 @@ local icon_frame_on_enter = function(self)
 
 			local class_icon, class_L, class_R, class_T, class_B = _detalhes:GetClassIcon(class)
 
-			local spec_id, spec_name, spec_description, spec_icon, spec_role, spec_class = DetailsFramework.GetSpecializationInfoByID(spec or 0) --thanks pas06
+			local spec_id, spec_name = DetailsFramework.GetSpecializationInfoByID(spec or 0) --thanks pas06
 			local spec_L, spec_R, spec_T, spec_B
 			if(spec_id) then
 				spec_L, spec_R, spec_T, spec_B  = unpack(_detalhes.class_specs_coords[spec])
