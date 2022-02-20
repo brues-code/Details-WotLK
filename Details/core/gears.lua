@@ -1746,9 +1746,13 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 
 	if (CheckInteractDistance (unitid, 1)) then
 		local average = 0
-
-		if GearScore_GetScore then -- replace ilvl with gearscore if available
-			average = GearScore_GetScore(UnitName(unitid), unitid)
+		if GearScore_GetScore and GS_Data then -- replace ilvl with gearscore if available
+			local unitName = UnitName(unitid)
+			GearScore_GetScore(unitName, unitid)
+			local unitGSData = GS_Data[GetRealmName()].Players[unitName]
+			if unitGSData then
+				average = unitGSData.GearScore
+			end
 		else
 			--> 16 = all itens including main and off hand
 			local item_amount = 16
